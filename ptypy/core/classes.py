@@ -35,6 +35,7 @@ This file is part of the PTYPY package.
 import numpy as np
 import weakref
 from collections import OrderedDict
+import warnings
 
 try:
     from pympler.asizeof import asizeof
@@ -709,8 +710,9 @@ class Storage(Base):
 
             megapixels = np.array(new_shape).astype(float).prod() / 1e6
             if megapixels > MEGAPIXEL_LIMIT:
-                raise RuntimeError('Arrays larger than %dM not supported. You '
-                                   'requested %.2fM pixels.' % (MEGAPIXEL_LIMIT, megapixels))
+                line_1 = 'Arrays larger than %dM may cause issues. You requested %.2fM pixels.' % (MEGAPIXEL_LIMIT, megapixels)
+                line_2 = 'If this seems too high, cancel job and check parameters.'
+                warnings.warn(line_1 + '\n' + line_2, ResourceWarning)
 
             # Apply Nd misfit
             if self.data is not None:
